@@ -107,7 +107,7 @@ while True:  #Loop to reconnect to SBOX if disconnected
 
                     board = Board_Parser(received_data)
                     board.possible_moves()
-                    print('Possible moves: ' + str(board.jump))
+                    # print('Possible moves: ' + str(board.clone))
 
                     #You've to respond with your move
                     response = {"dataType":"response","fromCell":[0,0], "toCell": [1,1]}

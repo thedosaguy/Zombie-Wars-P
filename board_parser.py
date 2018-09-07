@@ -4,7 +4,7 @@ class Board_Parser:
 
     def __init__(self, received_data):
 
-        self.jump = []
+        self.clone = []
 
         self.received_data = received_data
 
@@ -32,7 +32,9 @@ class Board_Parser:
 
     def possible_moves(self):
 
+        self.block_cells = self.block_cells.tolist()
         for my_zombie in self.my_zombies:
+            self.clone = []
             # print('My Zombie: ' + str(my_zombie))
             y = my_zombie[0]
             x = my_zombie[1]
@@ -43,11 +45,16 @@ class Board_Parser:
                     elif x+dx < 0 or x+dx >= self.size or y+dy < 0 or y+dy >= self.size:
                         pass
                     else:
-                        self.jump.append([x+dx, y+dy])
-        print('Jump cells: ' + str(self.jump))
-        print('Blocked cells: ' + str(self.block_cells))
-        for  move in self.jump:
-            if move in self.block_cells:
-                self.jump.remove(move)
+                        self.clone.append([x+dx, y+dy])
+            # print('Clone cells: ' + str(self.clone))
+            # print('Blocked cells: ' + str(self.block_cells))
+            for cell in self.clone:
+                if cell in self.block_cells:
+                    self.clone.remove(cell)
+
+            print(str(my_zombie) + ': '  + str(self.clone))
+
+        # self.clone = np.array(self.clone)
+        # self.block_cells = np.array(self.block_cells)
        
             
