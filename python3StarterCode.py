@@ -1,4 +1,3 @@
-
 ##### SPL 5 Python Starter bot
 
 """
@@ -18,21 +17,23 @@ import socket
 import json
 import time
 import random
+import numpy as np
+from board_parser import *
 
 ##### Place to configure TCP
 
-ip    = 'localhost'#'127.0.0.1'
-port  = 2018
+IP    = 'localhost'#'127.0.0.1'
+PORT  = 2018
 
 
 ##### Low-Level functions to interact with SBOX
 
-def sbox_connect(ip=ip, port=port):  
+def sbox_connect(ip=IP, port=PORT):  
     """
     Connects to the SBOX and returns the socket
     """
     soc=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    soc.connect((ip,port))
+    soc.connect((ip, port))
     return soc
 
 def receive_all(soc, length):
@@ -103,6 +104,9 @@ while True:  #Loop to reconnect to SBOX if disconnected
 
             elif received_data["dataType"] == "command":
                 if received_data["dataExpected"] == "move":
+
+                    board = Board_Parser(received_data)
+
                     #You've to respond with your move
                     response = {"dataType":"response","fromCell":[0,0], "toCell": [1,1]}
 
