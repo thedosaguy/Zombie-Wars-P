@@ -19,6 +19,7 @@ import time
 import random
 import numpy as np
 from board_parser import *
+from pprint import pprint
 
 ##### Place to configure TCP
 
@@ -64,7 +65,7 @@ def get_data(soc):
     else:
         return {}
     
-def send_data(soc,data):
+def send_data(soc, data):
     """
     formats and sends the given dictionary to the sbox
     """
@@ -104,13 +105,44 @@ while True:  #Loop to reconnect to SBOX if disconnected
 
             elif received_data["dataType"] == "command":
                 if received_data["dataExpected"] == "move":
+                                                            
+                    def ret_pos_moves(el):
+                        pass_dict = {}
+                        pass_dict["Empty"] = get_neighbours(board.board_data, el, 2, 0)
+                        pass_dict["Block"] = get_neighbours(board.board_data, el, 2, -1)
+                        pass_dict["Opp_Zom"] = get_neighbours(board.board_data, el, 2, 2)
+                        pass_dict["My_Zom"] = get_neighbours(board.board_data, el, 2, 1)
+                        return pass_dict
+
+
+
+
 
                     board = Board_Parser(received_data)
-                    board.possible_moves()
-                    # print('Possible moves: ' + str(board.clone))
+                    # board.possible_moves()
+                    my_moves = []
+                    my_moves = [ dict((el, ret_pos_moves(el)) for el in board.my_zombies)]                   
+                    pprint("Hey Wassup: "+str(my_moves))
+                    
+                    
 
+
+
+
+
+
+
+
+
+
+
+                    print('Hello: ' + str(get_neighbours(board.board_data, board.my_zombies[0], 2, 0)))
+                    # print('Possible moves: ' + str(board.clone))
                     #You've to respond with your move
-                    response = {"dataType":"response","fromCell":[0,0], "toCell": [1,1]}
+                    from_cell = list(map(int, board.my_zombies[0]))
+                    to_cell = list(map(int, get_neighbours(board.board_data, board.my_zombies[0], 2, 0)[0]))
+                    response = {"dataType":"response","fromCell":from_cell, "toCell": to_cell}
+                    print(response)
 
 
             elif received_data["dataType"] == "acknowledge":
@@ -126,7 +158,7 @@ while True:  #Loop to reconnect to SBOX if disconnected
                 continue
 
 
-            send_data(soc,response)
+            send_data(soc, response)
             print ("BOT >>> SBOX : ", response)
             #time.sleep(0.2)
             
@@ -141,8 +173,8 @@ while True:  #Loop to reconnect to SBOX if disconnected
     except Exception as e:
         #Handle Exceptions here
         raise e
-        # try:
-        #     if soc:
-        #         soc.close()
-        # except: pass
-        # print("EXCEPTION",e) 
+        try:
+            if soc:
+                soc.close()
+        except: pass
+        print("EXCEPTION",e) 
