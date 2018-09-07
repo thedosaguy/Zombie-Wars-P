@@ -106,6 +106,8 @@ while True:  #Loop to reconnect to SBOX if disconnected
                 if received_data["dataExpected"] == "move":
 
                     board = Board_Parser(received_data)
+                    board.possible_moves()
+                    print('Possible moves: ' + str(board.jump))
 
                     #You've to respond with your move
                     response = {"dataType":"response","fromCell":[0,0], "toCell": [1,1]}
@@ -138,8 +140,9 @@ while True:  #Loop to reconnect to SBOX if disconnected
 
     except Exception as e:
         #Handle Exceptions here
-        try:
-            if soc:
-                soc.close()
-        except: pass
-        print("EXCEPTION",e) 
+        raise e
+        # try:
+        #     if soc:
+        #         soc.close()
+        # except: pass
+        # print("EXCEPTION",e) 
